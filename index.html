@@ -176,29 +176,155 @@
   </section>
   <br><br>
   <section id="feedback_section">
-    <br><br>
-    <h1 class="feedbackh1">Feedback</h1><br><br>
-    <form class="feedback" action="mailto:pythondavidtest@gmail.com?subject=Quack Feedback" method="post" enctype="text/plain">
-      <h4 class="name">Name:</h4>&nbsp;&nbsp;<input type="text" name="name" value="" placeholder="Type your name here..."><br><br>
-      <h4 class="username">Quack Username:</h4>&nbsp;&nbsp;<input type="text" name="username" value="" placeholder="Type your username here."><br><br>
-      <h4 class="stars">Rating in Stars:</h4>&nbsp;&nbsp;
-      <span class="star-rating">
-        <input type="radio" name="rating" value="1"><i></i>
-        <input type="radio" name="rating" value="2"><i></i>
-        <input type="radio" name="rating" value="3"><i></i>
-        <input type="radio" name="rating" value="4"><i></i>
-        <input type="radio" name="rating" value="5"><i></i>
-        <input type="radio" name="rating" value="6"><i></i>
-        <input type="radio" name="rating" value="7"><i></i>
-        <input type="radio" name="rating" value="8"><i></i>
-        <input type="radio" name="rating" value="9"><i></i>
-        <input type="radio" name="rating" value="10"><i></i>
-      </span><br><br>
-      <h4 class="feedback_text">Feedback:</h4>&nbsp;&nbsp;<textarea class="feed" type="text" name="feedback" value="" placeholder="Type your feedback here..."></textarea><br><br>
-      <button type="submit" class="btn btn-info btn-lg btn-block fdsb">Submit feedback</button>
-    </form>
-    <br><br>
-  </section>
+    <style>
+        /* * --- Custom CSS for Success Alert ---
+         * This replaces Bootstrap styles for a simple, functional alert.
+         */
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0; /* Hidden by default */
+            display: none; /* Temporarily hide */
+            color: #3c763d; /* Text color */
+            background-color: #dff0d8; /* Light green background */
+            border-color: #d6e9c6; /* Green border */
+        }
+
+        .alert.show {
+            opacity: 1; /* Fade in */
+            display: block; /* Show container */
+        }
+
+        .alert-success strong {
+            font-weight: bold;
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 21px;
+            font-weight: bold;
+            line-height: 1;
+            color: #000;
+            text-shadow: 0 1px 0 #fff;
+            opacity: 0.2;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .submittext {
+            padding-top:2rem;
+        }
+
+    </style>
+
+    <section id="feedback_section">
+        <br><br>
+        <h1 class="feedbackh1">Feedback</h1><br><br>
+
+        <div id="success-alert" class="alert alert-success" role="alert">
+            <strong>Success!</strong> Your feedback email is ready. Please click 'Send' in your email client.
+            <button type="button" class="close-btn" aria-label="Close" onclick="document.getElementById('success-alert').style.display='none';">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <form id="feedbackForm" class="feedback">
+            <h4 class="name">Name:</h4>&nbsp;&nbsp;<input type="text" name="name" placeholder="Type your name here..."><br><br>
+
+            <h4 class="username">Quack Username: <span style="color:red;">*</span></h4>&nbsp;&nbsp;<input type="text" name="username" placeholder="Type your username here." required><br><br>
+
+            <h4 class="stars">Rating in Stars:</h4>&nbsp;&nbsp;
+            <span class="star-rating">
+                <input type="radio" name="rating" value="1"><i></i>
+                <input type="radio" name="rating" value="2"><i></i>
+                <input type="radio" name="rating" value="3"><i></i>
+                <input type="radio" name="rating" value="4"><i></i>
+                <input type="radio" name="rating" value="5"><i></i>
+                <input type="radio" name="rating" value="6"><i></i>
+                <input type="radio" name="rating" value="7"><i></i>
+                <input type="radio" name="rating" value="8"><i></i>
+                <input type="radio" name="rating" value="9"><i></i>
+                <input type="radio" name="rating" value="10"><i></i>
+            </span><br><br>
+
+            <h4 class="feedback_text">Feedback:</h4>&nbsp;&nbsp;<textarea class="feed" name="feedback" placeholder="Type your feedback here..."></textarea><br><br>
+            <button type="submit" class="btn btn-lg fdsb btn-block btn-info"><span class="submittext">Submit feedback</span></button>
+        </form>
+        <br><br>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('feedbackForm');
+            const successAlert = document.getElementById('success-alert');
+            const recipientEmail = 'pythondavidtest@gmail.com';
+
+            form.addEventListener('submit', function(e) {
+                // Prevent the default form submission (which would refresh the page)
+                e.preventDefault();
+
+                // 1. Validation Check (HTML5 built-in validation handles the error message)
+                if (!form.checkValidity()) {
+                    // If the required field is empty, the browser will display
+                    // the native error message and stop here.
+                    return;
+                }
+
+                // 2. Data Extraction
+                const formData = new FormData(form);
+                const name = formData.get('name') || 'N/A';
+                const username = formData.get('username'); // Guaranteed value due to 'required'
+                const rating = formData.get('rating') || 'N/A';
+                const feedbackText = formData.get('feedback') || 'N/A';
+
+                // 3. Date Formatting for Subject
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+                // 4. Construct the formatted Body string
+                // Use \n for new line
+                const bodyContent =
+                    `Name: ${name}\n` +
+                    `Quack Username: @${username}\n` +
+                    `Rating: ${rating} Stars\n` +
+                    `Feedback: ${feedbackText}\n`;
+
+                // 5. Encode and build the final mailto link
+                const subject = `QuackFeedback - ${formattedDate}`;
+
+                const mailtoLink = `mailto:${recipientEmail}` +
+                                   `?subject=${encodeURIComponent(subject)}` +
+                                   `&body=${encodeURIComponent(bodyContent)}`;
+
+                // 6. Execute Mailto and Show Success Notification
+
+                // Open the email client/prompt
+                window.location.href = mailtoLink;
+
+                // Show the custom success alert
+                successAlert.style.display = 'block';
+                successAlert.classList.add('show');
+
+                // Reset the form after successful submission
+                form.reset();
+
+                // Optional: Auto-hide the alert after 5 seconds
+                setTimeout(() => {
+                    successAlert.classList.remove('show');
+                    // Wait for the fade out transition to complete before setting display: none
+                    setTimeout(() => {
+                        successAlert.style.display = 'none';
+                    }, 500); // Matches the CSS transition duration
+                }, 5000);
+            });
+        });
+    </script>
+</section>
 
 
   <section id="contact-me">
